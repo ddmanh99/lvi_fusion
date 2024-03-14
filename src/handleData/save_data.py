@@ -4,8 +4,17 @@ import rospy
 import matplotlib.pyplot as plt
 from nav_msgs.msg import Odometry
 import os 
+import yaml
 
-dataSave_dir = '/home/manh/doan_ws/src/lvi_fusion/result/data/03_12.txt'
+yaml_file = '/home/manh/doan_ws/src/lvi_fusion/config/param.yaml'
+
+f = open(yaml_file, "r")
+data = yaml.safe_load(f)
+f.close()
+
+data_dir = data['data_dir']
+
+dataSave_dir = data_dir
 
 class SaveData():
     def __init__(self):
