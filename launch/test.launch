@@ -1,0 +1,20 @@
+<launch>
+    <arg name="project" default="lvi_fusion"/>
+    <!-- Load Parameters -->
+    <rosparam file="$(find lvi_fusion)/config/param.yaml" command="load" />
+
+    <node pkg="$(arg project)" type="$(arg project)_imuPreintegration" name="$(arg project)_imuPreintegration" output="screen" respawn="true"/>
+
+    <node pkg="$(arg project)" type="$(arg project)_cloudPreprocess" name="$(arg project)_cloudPreprocess" output="screen" respawn="true"/>
+    
+    <node pkg="$(arg project)" type="$(arg project)_mappingOpti" name="$(arg project)_mappingOpti" output="screen" respawn="true"/>
+
+    <!-- <include file="$(find lvi_fusion)/launch/include/module_saveData.launch"/> -->
+
+    <!-- Show in Rviz -->
+    <!-- <include file="$(find lvi_fusion)/launch/include/module_rviz.launch"/> -->
+
+    <!-- Load data by rosbag -->
+    <include file="$(find lvi_fusion)/launch/include/module_rosbag.launch"/>
+    
+</launch>

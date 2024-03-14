@@ -1,0 +1,10 @@
+<launch>
+    <!-- Load data by rosbag -->
+    <node pkg="rosbag" type="play" name="rosbag"
+        args="-d 5 /home/manh/ttb3_ws/src/datasets/2024-01-25-15-15-52.bag" />
+
+    # file rosbag dont include topic /tf
+    # -d 5 : delay 5s 
+    # -r 1 : frequency 1hzs 
+
+</launch>

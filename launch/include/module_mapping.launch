@@ -1,0 +1,18 @@
+<launch>
+    <arg name="project" default="lvi_fusion"/>
+
+    <node pkg="$(arg project)" type="$(arg project)_imuPreintegration" name="$(arg project)_imuPreintegration" output="screen" respawn="true"/>
+    # type="" la ten file sau add executable trong CMakeList
+
+    <node pkg="$(arg project)" type="$(arg project)_cloudPreprocess" name="$(arg project)_cloudPreprocess" output="screen" respawn="true"/>
+    
+    <node pkg="$(arg project)" type="$(arg project)_mappingOpti" name="$(arg project)_mappingOpti" output="screen" respawn="true"/>
+
+    <!-- <node pkg="$(arg project)" type="mapping2d" name="mapping2d" output="screen">
+        <remap from="/scan" to="/scan"/>
+        
+    </node> -->
+
+    
+    
+</launch>

@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="lvi_fusion" name="save_data" type="save_data.py" output="screen" />
+</launch>

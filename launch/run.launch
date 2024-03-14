@@ -1,0 +1,22 @@
+<launch>
+    <arg name="project" default="lvi_fusion"/>
+    <!-- Load Parameters -->
+    <rosparam file="$(find lvi_fusion)/config/param.yaml" command="load" />
+
+
+    <!-- Module SLAM -->
+    <include file="$(find lvi_fusion)/launch/include/module_mapping.launch"/>
+
+    <!-- Robot publish TF -->
+    <!-- <include file="$(find lvi_fusion)/launch/include/module_robot_state_publisher.launch"/> -->
+
+    <!-- Save data to text file -->
+    <include file="$(find lvi_fusion)/launch/include/module_saveData.launch"/>
+
+    <!-- Show in Rviz -->
+    <include file="$(find lvi_fusion)/launch/include/module_rviz.launch"/>
+
+    <!-- Load data by rosbag -->
+    <include file="$(find lvi_fusion)/launch/include/module_rosbag.launch"/>
+    
+</launch>

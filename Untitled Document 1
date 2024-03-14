@@ -1,0 +1,13 @@
+Fix error:
+	1. undefined symbol: _ZNK5gtsam16NoiseModelFactor5printERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5boost8functionIFS6_mEEE
+	
+	--> build lai gtsam 
+	cd gtsam/build
+	sudo make install 
+
+	2. Cannot load message class for [lvi_fusion/cloud_info]. Are your messages built?
+
+	Do đó là msg tự tạo nên cần trỏ vào file build(.h) của msg trong devel
+
+	--> trỏ vào thư viện của msg 
+	source devel/setup.bash  

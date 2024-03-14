@@ -1,0 +1,38 @@
+lvi_fusion:
+  
+  # Topics
+  imuTopic:   "imu"
+  odomTopic:  "odometry/imu"
+  pointCloudTopic: "p"
+
+  # Frame
+  lidarFrame:     "base_link_"
+  baselinkFrame:  "base_link_"
+  odometryFrame:  "odom_"
+  mapFrame:       "map_"
+
+  # Sensor settings
+  N_SCAN: 16
+
+  # IMU settings
+  imuAccNoise: 1.7e-2
+  imuGyrNoise: 2.0e-4
+  imuAccBiasN: 0.0001
+  imuGyrBiasN: 0.0000008
+  imuGravity: 0.0
+  imuRPYWeight: 0.01
+
+  mappingProcessInterval: 0.15
+
+  # robot motion constraint (in case you are using a 2D robot)
+  z_tollerance: 1000                            # meters
+  rotation_tollerance: 1000                     # radians
+
+  # Extrinsics
+  extrinsicTrans: [0.0, 0.0, 0.0]
+  extrinsicRot:   [1, 0, 0,
+                    0, 1, 0,
+                    0, 0, 1]
+  extrinsicRPY:   [1, 0, 0,
+                    0, 1, 0,
+                    0, 0, 1]

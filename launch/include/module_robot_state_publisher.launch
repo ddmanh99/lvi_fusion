@@ -1,0 +1,9 @@
+<launch>
+
+    <arg name="project" default="lvi_fusion"/>
+
+    <param name="robot_description" command="$(find xacro)/xacro $(find lvi_fusion)/launch/include/config/robot.urdf.xacro --inorder"/>
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true"/>
+
+</launch>

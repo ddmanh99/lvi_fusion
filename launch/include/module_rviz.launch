@@ -1,0 +1,10 @@
+<launch>
+
+    <arg name="project" default="lvi_fusion"/>
+
+    <!--- Run Rviz-->
+    <!-- <node pkg="rviz" type="rviz" name="$(arg project)_rviz" args="-d $(find lvi_fusion)/launch/include/config/rviz.rviz" /> -->
+
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find lvi_fusion)/launch/include/config/slam2d.rviz"/>
+
+</launch>
