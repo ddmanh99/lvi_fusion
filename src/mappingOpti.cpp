@@ -262,7 +262,7 @@ public:
         tr.transform.rotation.z = laserOdometryROS.pose.pose.orientation.z;
         tr.transform.rotation.w = laserOdometryROS.pose.pose.orientation.w;
 
-        std::cout<<tr.transform.translation.x<<std::endl;
+        // std::cout<<tr.transform.translation.x<<std::endl;
         br.sendTransform(tr);
     }
 
@@ -570,10 +570,11 @@ public:
             // printf("translate(theta, x, y): %lf, %lf, %lf\n", pose[0], pose[1], pose[2]);
 
             delta.theta = pose[0];
-            delta.t(0) = pose[1];
-            delta.t(1) = pose[2];
+            delta.t(0) = -pose[1];
+            delta.t(1) = -pose[2];
+            
 
-            // std::cout<<"x,y"<<delta.t(0)<<" "<<delta.t(1)<<std::endl;
+            std::cout<<"delta x,y : "<<delta.t(0)<<" "<<delta.t(1)<<std::endl;
         }
 
     }

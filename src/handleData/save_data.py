@@ -26,8 +26,8 @@ class SaveData():
             os.remove(self.data_dir)
         #topic 
         self.odom_topic = rospy.Subscriber("/odom",Odometry,self.odom_callback)
-        self.imuInc_topic  = rospy.Subscriber("/odometry/imu_incremental",Odometry,self.imuInc_callback)
-        self.mapInc_topic = rospy.Subscriber("/mapping/odometry_incremental", Odometry, self.mapInc_callback)
+        # self.imuInc_topic  = rospy.Subscriber("/odometry/imu_incremental",Odometry,self.imuInc_callback)
+        # self.mapInc_topic = rospy.Subscriber("/mapping/odometry_incremental", Odometry, self.mapInc_callback)
         self.mapOdom_topic = rospy.Subscriber("/mapping/odometry", Odometry, self.mapOdom_callback)
         self.odom     = Odometry()
         self.imuInc   = Odometry()
@@ -51,11 +51,15 @@ class SaveData():
 
     def write_data(self):
         a = open(self.data_dir, 'a')
-        a.write(str(self.odom.header.seq) +" "+ str(self.odom.pose.pose.position.x) +" "+ str(self.odom.pose.pose.position.y)
-                +" "+ str(self.imuInc.pose.pose.position.x) +" "+ str(self.imuInc.pose.pose.position.y)
-                +" "+ str(self.mapInc.pose.pose.position.x) +" "+ str(self.mapInc.pose.pose.position.y) 
-                +" "+ str(self.mapOdom.pose.pose.position.x) +" "+ str(self.mapOdom.pose.pose.position.y)+"\n")
+        # a.write(str(self.odom.header.seq) +" "+ str(self.odom.pose.pose.position.x) +" "+ str(self.odom.pose.pose.position.y)
+        #         +" "+ str(self.imuInc.pose.pose.position.x) +" "+ str(self.imuInc.pose.pose.position.y)
+        #         +" "+ str(self.mapInc.pose.pose.position.x) +" "+ str(self.mapInc.pose.pose.position.y) 
+        #         +" "+ str(self.mapOdom.pose.pose.position.x) +" "+ str(self.mapOdom.pose.pose.position.y)+"\n")
+        a.write( str(self.mapOdom.pose.pose.position.x) +" "+ str(self.mapOdom.pose.pose.position.y) +" "+str(self.mapOdom.pose.pose.position.z) +" "
+                + str(self.mapOdom.pose.pose.orientation.x) +" "+ str(self.mapOdom.pose.pose.orientation.y) +" "+ str(self.mapOdom.pose.pose.orientation.z) +" "+ str(self.mapOdom.pose.pose.orientation.w) +"\n")
         a.close()
+
+
 
     def info(self):
         rospy.loginfo(f'\033[94mData result saved in\033[0m {self.data_dir}')
@@ -63,7 +67,7 @@ class SaveData():
 
 if __name__ == "__main__":
     rospy.init_node('save_data',anonymous=False)
-    rate = 10 
+    rate = 1
     r = rospy.Rate(rate)
 
     rospy.loginfo("\033[92mInit Node Saving...\033[0m")
