@@ -1,8 +1,8 @@
 
 
 
-odom_dir = "/home/manh/doan_ws/src/lvi_fusion/result/data/compareData/odometry.txt"
-gmap="/home/manh/doan_ws/src/lvi_fusion/result/data/compareData/odometry_.txt"
+odom_dir = ""
+gmap=""
 stamp =[]
 x =[]
 y =[]

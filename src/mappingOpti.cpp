@@ -40,6 +40,9 @@ class mappingOpti : public ParamServer
 public:
     ros::Subscriber subCloud;
 
+    ros::Subscriber subOdom;
+    std::deque<nav_msgs::Odometry> odomQueue;
+
     ros::Publisher pubLaserOdometryIncremental;
 
     ros::Publisher pubLaserOdometryGlobal;
@@ -50,6 +53,8 @@ public:
     lvi_fusion::cloud_info cloudInfo;
 
     float transformTobeMapped[6];
+    float laser[180];
+    float laser_pre[180];
 
     ros::Time timeLaserInfoStamp;
     double timeLaserInfoCur;
@@ -75,6 +80,8 @@ public:
     nav_msgs::OccupancyGrid map2d;
     Mat cvmap2d;
 
+
+
     // Vector2d world2map(Vector2d p);
     // cv::Point2i world2map(cv::Point2f p);
 
@@ -83,6 +90,7 @@ public:
     mappingOpti()
     {
         subCloud = nh.subscribe<lvi_fusion::cloud_info>("lvi_fusion/cloud_info", 5, &mappingOpti::laserCloudInfoHandler, this, ros::TransportHints().tcpNoDelay());
+        subOdom     = nh.subscribe<nav_msgs::Odometry>("/odom", 2000, &mappingOpti::odometryHandler, this, ros::TransportHints().tcpNoDelay());
 
         pubLaserOdometryIncremental = nh.advertise<nav_msgs::Odometry> ("/mapping/odometry_incremental", 5);
         pubLaserOdometryGlobal = nh.advertise<nav_msgs::Odometry> ("/mapping/odometry", 5);
@@ -97,6 +105,11 @@ public:
         for (int i = 0; i < 6; ++i){
             transformTobeMapped[i] = 0.0;
         }
+        for (int i = 0; i < 180; ++i){
+            laser[i] = 0.0;
+            laser_pre[i] = 0.0;
+        }
+
         state.t = Vector2d::Zero();
         state.theta = 0;
         map2d.header.frame_id = odometryFrame;
@@ -114,6 +127,10 @@ public:
         cvmap2d = Mat(map2d.info.width, map2d.info.height, CV_8SC1, -1);
         cvmap2map();
     }
+    void odometryHandler(const nav_msgs::Odometry::ConstPtr& odometryMsg)
+    {
+        odomQueue.push_back(*odometryMsg);
+    }
 
     void laserCloudInfoHandler(const lvi_fusion::cloud_infoConstPtr& msgIn)
     {
@@ -127,7 +144,7 @@ public:
         if ( timeLaserInfoCur - timeLastProcessing >= mappingProcessInterval)
         {
             timeLastProcessing = timeLaserInfoCur;
-            // std::cout<<"----------------"<<std::endl;
+            std::cout<<"----------------"<<std::endl;
             
 
             updateInitialGuess();
@@ -144,18 +161,95 @@ public:
 
     void update()
     {
-
         if (scan.points.size() && scan_prev.points.size())
         {
-            scan_match();
-            update_transform();
-            scan_map_match_random();
+            int sum = 0;
+            for (int i = 0; i < 180; ++i)
+            {
+                if ( abs(laser[i] - laser_pre[i]) > min_diff_scan )
+                {
+                    sum++;
+                }
+            }
+            std::cout<<"sum: "<<sum<<std::endl;
+            if (sum>diff_scan)
+            {
+                scan_match();
+                update_transform();
+                // std::cout<<"1"<<std::endl;
+                scan_map_match_random();
+            }
+            else
+            {
+                while (!odomQueue.empty())
+                {
+                    if (odomQueue.front().header.stamp.toSec() < timeLaserInfoCur - 0.01)
+                        odomQueue.pop_front();
+                    else
+                        break;
+                }
+
+                if (odomQueue.empty())
+                {
+                    std::cout<<"odomQueue is empty !!!"<<std::endl;
+                    return;
+                }
+                
+                // if (odomQueue.front().header.stamp.toSec() > timeLaserInfoCur + 0.015)
+                // {
+                //     std::cout<<odomQueue.front().header.stamp.toSec()<<" "<< timeLaserInfoCur<<std::endl;
+                //     std::cout<<"odomQueue is timeout"<<std::endl;
+                //     return;
+                // }
+
+                nav_msgs::Odometry odomFactor;
+
+                for (int i=0; i<(int)odomQueue.size(); ++i)
+                {
+                    odomFactor = odomQueue[i];
+
+                    if(ROS_TIME(&odomFactor)<timeLaserInfoCur)
+                        continue;
+                    else
+                        break;
+                }
+
+                tf::Quaternion orientation;
+                tf::quaternionMsgToTF(odomFactor.pose.pose.orientation, orientation);
+
+                double roll,pitch,yaw;
+                tf::Matrix3x3(orientation).getRPY(roll,pitch,yaw);
+
+                transformTobeMapped[0] = roll;
+                transformTobeMapped[1] = pitch;
+                transformTobeMapped[2] = yaw;
+                transformTobeMapped[3] = odomFactor.pose.pose.position.x;
+                transformTobeMapped[4] = odomFactor.pose.pose.position.y + 0.25;
+                transformTobeMapped[5] = odomFactor.pose.pose.position.z;
+                transformUpdate();
+            }
             update_map();
+        
         }
+
+        // if (scan.points.size() && scan_prev.points.size())
+        // {
+        //     scan_match();
+        //     update_transform();
+        //     // std::cout<<"1"<<std::endl;
+        //     scan_map_match_random();
+        //     // std::cout<<"2"<<std::endl;
+        //     update_map();
+        //     // std::cout<<"3"<<std::endl;
+        // }
 
         if (scan.points.size())
         {
             scan_prev = scan;
+            for (int i=0; i<180; i++)
+            {
+                laser_pre[i] = laser[i];
+            }
         }
     }
 
@@ -229,6 +323,7 @@ public:
         }
         // std::cout<<"end "<<laserOdomIncremental.pose.pose.position.x<<std::endl;
         pubLaserOdometryIncremental.publish(laserOdomIncremental);
+        // std::cout<<laserOdomIncremental<<std::endl;
 
         ////
         static nav_msgs::Path path;
@@ -255,6 +350,7 @@ public:
         tr.header.frame_id = odometryFrame;
         tr.child_frame_id = baselinkFrame;
         tr.transform.translation.x = laserOdometryROS.pose.pose.position.x;
+        // std::cout<<"publish: "<<tr.transform.translation.x<<std::endl;
         tr.transform.translation.y = laserOdometryROS.pose.pose.position.y;
         tr.transform.translation.z = 0;
         tr.transform.rotation.x = laserOdometryROS.pose.pose.orientation.x;
@@ -321,19 +417,20 @@ public:
     void update_map()
     {
         cv::Point2f tt;
-    tt.x = state.t(0);
-    tt.y = state.t(1);
+    tt.x = transformTobeMapped[3];
+    tt.y = transformTobeMapped[4];
     cv::Point2i origin = world2map(tt);
     if (origin.x < 0 || origin.x >= cvmap2d.cols || origin.y < 0 || origin.y >= cvmap2d.rows) return;
     Eigen::Matrix2d R;
-    R(0, 0) = cos(state.theta); R(0, 1) = -sin(state.theta);
-    R(1, 0) = sin(state.theta); R(1, 1) =  cos(state.theta);
+    R(0, 0) = cos(transformTobeMapped[2]); R(0, 1) = -sin(transformTobeMapped[2]);
+    R(1, 0) = sin(transformTobeMapped[2]); R(1, 1) =  cos(transformTobeMapped[2]);
     for (int i = 0; i < scan.points.size(); i++)
     {
         PointType p = scan.points[i];
         float dist = sqrtf(p.x * p.x + p.y * p.y);
         if (dist > 20) continue;
-        Eigen::Vector2d pp = R * point2eigen(p) + state.t;
+        Vector2d t(transformTobeMapped[3],transformTobeMapped[4]);
+        Eigen::Vector2d pp = R * point2eigen(p) + t;
         Point2f ppp(pp(0), pp(1));
 
         cv:Point2i pt = world2map(ppp);
@@ -382,7 +479,7 @@ public:
 
     void scan_map_match_random()
     {
-        Vector3d pose(state.theta, state.t(0), state.t(1));
+        Vector3d pose(transformTobeMapped[2], transformTobeMapped[3], transformTobeMapped[4]);
         double eps = 1e-5;
     //search best mattch
         int N = 200;
@@ -415,13 +512,13 @@ public:
             // cout << "dx: " << dx.transpose() << endl;
     }
     //update to state
-    state.theta = pose(0);
-    state.t = pose.bottomRows(2);
+    // state.theta = pose(0);
+    // state.t = pose.bottomRows(2);
     transformTobeMapped[0] += 0.0;
         transformTobeMapped[1] += 0.0;
-        transformTobeMapped[2] = state.theta;
-        transformTobeMapped[3] = state.t(0);
-        transformTobeMapped[4] = state.t(1);
+        transformTobeMapped[2] = pose(0);
+        transformTobeMapped[3] = pose(1);
+        transformTobeMapped[4] = pose(2);
         transformTobeMapped[5] += 0.0;
 
         // std::cout<<"delta "<<delta.t(0)<<std::endl;
@@ -450,10 +547,13 @@ public:
     
 
         Eigen::Matrix2d R;
-        R(0, 0) = cos(state.theta); R(0, 1) = -sin(state.theta);
-        R(1, 0) = sin(state.theta); R(1, 1) =  cos(state.theta);
-        state.theta += (-delta.theta);
-        state.t += R * dt_inv;
+        R(0, 0) = cos(transformTobeMapped[2]); R(0, 1) = -sin(transformTobeMapped[2]);
+        R(1, 0) = sin(transformTobeMapped[2]); R(1, 1) =  cos(transformTobeMapped[2]);
+        transformTobeMapped[2] += (-delta.theta);
+        Vector2d t(transformTobeMapped[3], transformTobeMapped[4]);
+        t += R * dt_inv;
+        transformTobeMapped[3] = t(0);
+        transformTobeMapped[4] = t(1);
     }
     // void update_transform()
     // {
@@ -574,7 +674,7 @@ public:
             delta.t(1) = -pose[2];
             
 
-            std::cout<<"delta x,y : "<<delta.t(0)<<" "<<delta.t(1)<<std::endl;
+            // std::cout<<"delta x,y : "<<delta.t(0)<<" "<<delta.t(1)<<std::endl;
         }
 
     }
@@ -585,6 +685,7 @@ public:
         for (auto i = 0; i < (int)cloudInfo.scan.ranges.size(); i++)
         {
             float dist = cloudInfo.scan.ranges[i]; 
+            laser[i] = dist;
             float theta = cloudInfo.scan.angle_min + i * cloudInfo.scan.angle_increment;
             scan.points[i].x = dist * cos(theta);
             scan.points[i].y = dist * sin(theta);
@@ -676,7 +777,6 @@ public:
             return;
         }
         
-        // std::cout<<"2.5 "<<transformTobeMapped[3]<<std::endl;
     }
 
     Eigen::Affine3f trans2Affine3f(float transformIn[])

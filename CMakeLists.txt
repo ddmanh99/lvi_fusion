@@ -95,9 +95,6 @@ add_dependencies(${PROJECT_NAME}_mappingOpti ${catkin_EXPORTED_TARGETS} ${PROJEC
 target_link_libraries(${PROJECT_NAME}_mappingOpti Boost::timer ${catkin_LIBRARIES} ${EIGEN3_LIBS} ${PCL_LIBRARIES} ${CERES_LIBRARIES} ${OpenCV_LIBS} gtsam)
 
 
-add_executable(${PROJECT_NAME}_plot_test src/handleData/plot_test.cpp)
-target_link_libraries(${PROJECT_NAME}_plot_test Boost::timer ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${EIGEN3_LIBS} ${Python3_LIBRARIES} gtsam)
-
 
 
 

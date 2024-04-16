@@ -80,6 +80,8 @@ public:
 
     // Lidar sensor Config
     int N_SCAN;
+    float diff_scan;
+    float min_diff_scan;
 
     // IMU
     float imuAccNoise;
@@ -118,6 +120,8 @@ public:
         nh.param<std::string>("lvi_fusion/mapFrame", mapFrame, "map");
 
         nh.param<int>("lvi_fusion/N_SCAN", N_SCAN, 180);
+        nh.param<float>("lvi_fusion/diff_scan", diff_scan, 50);
+        nh.param<float>("lvi_fusion/min_diff_scan", min_diff_scan, 0.07);
 
         nh.param<float>("lvi_fusion/imuAccNoise", imuAccNoise, 1.7e-2);
         nh.param<float>("lvi_fusion/imuGyrNoise", imuGyrNoise, 2.0e-4);

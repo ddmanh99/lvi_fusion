@@ -264,6 +264,7 @@ public:
         float p_x = odomMsg->pose.pose.position.x;
         float p_y = odomMsg->pose.pose.position.y;
         float p_z = odomMsg->pose.pose.position.z;
+        // std::cout<<p_x<<" "<<p_y<<" "<<std::endl;
         float r_x = odomMsg->pose.pose.orientation.x;
         float r_y = odomMsg->pose.pose.orientation.y;
         float r_z = odomMsg->pose.pose.orientation.z;

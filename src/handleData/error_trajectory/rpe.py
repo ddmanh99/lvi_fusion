@@ -292,7 +292,7 @@ if __name__ == '__main__':
     This script computes the relative pose error from the ground truth trajectory and the estimated trajectory. 
     ''')
     parser.add_argument('--groundtruth_file', help='ground-truth trajectory file (format: "timestamp tx ty tz qx qy qz qw")',default='/home/manh/doan_ws/src/lvi_fusion/result/data/compareData/odometry.txt')
-    parser.add_argument('--estimated_file', help='estimated trajectory file (format: "timestamp tx ty tz qx qy qz qw")',default="/home/manh/doan_ws/src/lvi_fusion/result/data/compareData/karto.txt")
+    parser.add_argument('--estimated_file', help='estimated trajectory file (format: "timestamp tx ty tz qx qy qz qw")',default="/home/manh/doan_ws/src/lvi_fusion/result/data/compareData/our3.txt")
     parser.add_argument('--max_pairs', help='maximum number of pose comparisons (default: 10000, set to zero to disable downsampling)', default=10000)
     parser.add_argument('--fixed_delta', help='only consider pose pairs that have a distance of delta delta_unit (e.g., for evaluating the drift per second/meter/radian)', action='store_true',default=1)
     parser.add_argument('--delta', help='delta for evaluation (default: 1.0)',default=1.0)

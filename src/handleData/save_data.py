@@ -55,7 +55,7 @@ class SaveData():
         #         +" "+ str(self.imuInc.pose.pose.position.x) +" "+ str(self.imuInc.pose.pose.position.y)
         #         +" "+ str(self.mapInc.pose.pose.position.x) +" "+ str(self.mapInc.pose.pose.position.y) 
         #         +" "+ str(self.mapOdom.pose.pose.position.x) +" "+ str(self.mapOdom.pose.pose.position.y)+"\n")
-        a.write( str(self.mapOdom.pose.pose.position.x) +" "+ str(self.mapOdom.pose.pose.position.y) +" "+str(self.mapOdom.pose.pose.position.z) +" "
+        a.write(str(self.odom.header.stamp) +" "+ str(self.mapOdom.pose.pose.position.x) +" "+ str(self.mapOdom.pose.pose.position.y) +" "+str(self.mapOdom.pose.pose.position.z) +" "
                 + str(self.mapOdom.pose.pose.orientation.x) +" "+ str(self.mapOdom.pose.pose.orientation.y) +" "+ str(self.mapOdom.pose.pose.orientation.z) +" "+ str(self.mapOdom.pose.pose.orientation.w) +"\n")
         a.close()
 

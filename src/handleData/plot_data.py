@@ -46,7 +46,7 @@ d2 = []
 e1 = []
 e2 = []
 
-topic = ["/odom", "/odometry/imu_incremental", "/mapping/odometry_incremental", "/mapping/odometry"]
+topic = ["/GR", "our_method", "gmapping", "karto slam"]
 m = 50
 
 f = open(data_dir, "r")
@@ -83,20 +83,3 @@ plt.show()
 
 print(f'\033[94mImage results saved in\033[0m {save_dir}')
 
-rmse = []
-rmse.append( math.sqrt(np.mean((np.array(a1[m:len(a1)]) - np.array(b1[m:len(a1)]))**2)))
-rmse.append( math.sqrt(np.mean((np.array(a2[m:len(a1)]) - np.array(b2[m:len(a1)]))**2)))
-
-rmse.append( math.sqrt(np.mean((np.array(a1[m:len(a1)]) - np.array(c1[m:len(a1)]))**2)))
-rmse.append( math.sqrt(np.mean((np.array(a2[m:len(a1)]) - np.array(c2[m:len(a1)]))**2)))
-
-rmse.append( math.sqrt(np.mean((np.array(a1[m:len(a1)]) - np.array(d1[m:len(a1)]))**2)))
-rmse.append( math.sqrt(np.mean((np.array(a2[m:len(a1)]) - np.array(d2[m:len(a1)]))**2)))
-
-
-# rmse.append( math.sqrt(np.mean((np.array(e1[m:len(e1)]) - np.array(d1[m:len(e1)]))**2)))
-# rmse.append( math.sqrt(np.mean((np.array(e2[m:len(e1)]) - np.array(d2[m:len(e1)]))**2)))
-
-print(f'RMSE Localiztion of {topic[1]} (x,y): {round(rmse[0],4), round(rmse[1],4)} (m)\n')
-print(f'RMSE Localiztion of {topic[2]} (x,y): {round(rmse[2],4), round(rmse[3],4)} (m)\n')
-print(f'RMSE Localiztion of {topic[3]} (x,y): {round(rmse[4],4), round(rmse[5],4)} (m)\n')

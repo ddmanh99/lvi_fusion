@@ -1,7 +1,7 @@
 from decimal import Decimal
 odom_dir = "/home/manh/doan_ws/src/lvi_fusion/result/data/compareData/odometry_.txt"
-gmap_dir = "/home/manh/doan_ws/src/lvi_fusion/result/data/03_16.txt"
-gmap = "/home/manh/doan_ws/src/lvi_fusion/result/data/compareData/our1.txt"
+gmap_dir = "/home/manh/doan_ws/src/lvi_fusion/result/data/compareData/our3.txt"
+gmap = "/home/manh/doan_ws/src/lvi_fusion/result/data/compareData/gmapping_.txt"
 
 stamd = []
 
@@ -33,7 +33,7 @@ for line in glines:
     # qw.append(Decimal(numbers[6]))
 
     x.append(Decimal(numbers[1]))
-    y.append(Decimal(numbers[2]))
+    y.append(Decimal(numbers[2])+Decimal(0.25))
     z.append(Decimal(numbers[3]))
     qx.append(Decimal(numbers[4]))
     qy.append(Decimal(numbers[5]))

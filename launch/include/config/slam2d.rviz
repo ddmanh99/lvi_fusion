@@ -106,7 +106,11 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
+        base_footprint:
+          Value: true
         base_link_:
+          Value: true
+        odom:
           Value: true
         odom_:
           Value: true
@@ -150,7 +154,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 50.213966369628906
+      Distance: 70.80634307861328
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -158,9 +162,9 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 1.6238737106323242
-        Y: 0.07503247261047363
-        Z: -40.46331787109375
+        X: 10.939287185668945
+        Y: 8.067187309265137
+        Z: -40.47259521484375
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
@@ -187,4 +191,4 @@ Window Geometry:
     collapsed: true
   Width: 1386
   X: 303
-  Y: 77
+  Y: 114
