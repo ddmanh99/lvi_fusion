@@ -13,7 +13,7 @@ class Plotting():
     def __init__(self):
 
         # Topic
-        self.odom_topic = rospy.Subscriber("/odom",Odometry,self.odom_callback)
+        self.odom_topic = rospy.Subscriber("/camera/odom/sample",Odometry,self.odom_callback)
         
         self.imuInc_topic  = rospy.Subscriber("/odometry/imu_incremental",Odometry,self.imuInc_callback)
         self.imu_topic = rospy.Subscriber("/odometry/imu", Odometry, self.imu_callback)
@@ -76,10 +76,14 @@ class Plotting():
         plt.title("Localization using Encoder and IMU based on Factor Graph")
         plt.xlabel("x [m]")
         plt.ylabel('y [m]')
-        # print(len(self.a),len(self.b),len(self.c),len(self.d))
-        plt.savefig(self.save_dir,dpi=1000)
+
+        # Đặt cùng độ chia cho cả hai trục
+        plt.gca().set_aspect('equal', adjustable='box')
+
+        plt.savefig(self.save_dir, dpi=1000)
         plt.show()
         rospy.loginfo(f'\033[94mImage saved in\033[0m {self.save_dir}')
+
 
 if __name__ == "__main__":
     rospy.init_node('matplot',anonymous=False)

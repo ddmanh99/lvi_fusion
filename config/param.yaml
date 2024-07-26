@@ -3,8 +3,8 @@ data_dir: /home/manh/doan_ws/src/lvi_fusion/result/data/03_26.txt
 lvi_fusion:
   
   # Topics
-  imuTopic:   "imu"
-  odomTopic:  "odometry/imu"
+  imuTopic:   "/imu"
+  odomTopic:  "/camera/odom/sample"
   pointCloudTopic: "p"
 
   # Frame

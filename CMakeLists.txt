@@ -94,6 +94,10 @@ add_executable(${PROJECT_NAME}_mappingOpti src/mappingOpti.cpp)
 add_dependencies(${PROJECT_NAME}_mappingOpti ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_generate_messages_cpp)
 target_link_libraries(${PROJECT_NAME}_mappingOpti Boost::timer ${catkin_LIBRARIES} ${EIGEN3_LIBS} ${PCL_LIBRARIES} ${CERES_LIBRARIES} ${OpenCV_LIBS} gtsam)
 
+add_executable(${PROJECT_NAME}_imu_preProcess src/imu_preProcess.cpp)
+add_dependencies(${PROJECT_NAME}_imu_preProcess ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_generate_messages_cpp)
+target_link_libraries(${PROJECT_NAME}_imu_preProcess Boost::timer ${catkin_LIBRARIES} ${EIGEN3_LIBS} ${PCL_LIBRARIES} ${CERES_LIBRARIES} ${OpenCV_LIBS} gtsam)
+
 
 
 

@@ -25,7 +25,7 @@ class SaveData():
         if os.path.exists(self.data_dir):
             os.remove(self.data_dir)
         #topic 
-        self.odom_topic = rospy.Subscriber("/odom",Odometry,self.odom_callback)
+        self.odom_topic = rospy.Subscriber("/camera/odom/sample",Odometry,self.odom_callback)
         # self.imuInc_topic  = rospy.Subscriber("/odometry/imu_incremental",Odometry,self.imuInc_callback)
         # self.mapInc_topic = rospy.Subscriber("/mapping/odometry_incremental", Odometry, self.mapInc_callback)
         self.mapOdom_topic = rospy.Subscriber("/mapping/odometry", Odometry, self.mapOdom_callback)
